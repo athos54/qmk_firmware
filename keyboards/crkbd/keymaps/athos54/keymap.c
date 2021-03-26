@@ -61,15 +61,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                       //`--------------------------'  `--------------------------'
   ),
 
-  
+
 
   [3] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      KC_TAB, ES_LBRC, ES_RBRC, ES_LCBR, ES_RCBR, XXXXXXX,                       ES_LABK, ES_RABK,  KC_MS_U,  XXXXXXX,  XXXXXXX, XXXXXXX,
+      KC_TAB, ES_LBRC, ES_RBRC, ES_LCBR, ES_RCBR, KC_MS_ACCEL0,                       ES_LABK, ES_RABK,  KC_MS_U,  XXXXXXX,  XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      RGB_TOG, KC_MS_WH_UP, KC_MS_WH_DOWN, KC_BTN2, KC_BTN1, XXXXXXX,                      XXXXXXX, KC_MS_L, KC_MS_D, KC_MS_R, XXXXXXX, XXXXXXX,
+      RGB_TOG, KC_MS_WH_UP, KC_MS_WH_DOWN, KC_BTN2, KC_BTN1, KC_MS_ACCEL1,                      XXXXXXX, KC_MS_L, KC_MS_D, KC_MS_R, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      RGB_MOD, RGB_HUD, RGB_SAD, RGB_VAD, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_ESC,
+      RGB_MOD, RGB_HUD, RGB_SAD, KC_MS_WH_LEFT, KC_MS_WH_RIGHT, KC_MS_ACCEL2,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_ESC,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           KC_LGUI, _______,  KC_SPC,     KC_ENT, _______, KC_RALT
                                       //`--------------------------'  `--------------------------'
@@ -91,6 +91,7 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) {
 
 void oled_render_layer_state(void) {
     oled_write_P(PSTR("Layer: "), false);
+
     switch (layer_state) {
         case L_BASE:
             oled_write_ln_P(PSTR("Default"), false);
@@ -139,6 +140,22 @@ void oled_render_keylog(void) {
     oled_write(keylog_str, false);
 }
 
+void oled_render_wpm(void) {
+    int wpm;
+    wpm = get_current_wpm();
+    char snum[5];
+
+    // convert 123 to string [buf]
+    itoa(wpm, snum, 10);
+
+    // print our string
+    printf("%s\n", snum);
+
+    oled_write_ln_P(PSTR(""), false);
+    oled_write_P(PSTR("WPM: "), false);
+    oled_write(snum, false);
+}
+
 void render_bootmagic_status(bool status) {
     /* Show Ctrl-Gui Swap options */
     static const char PROGMEM logo[][2][3] = {
@@ -167,6 +184,7 @@ void oled_task_user(void) {
     if (is_master) {
         oled_render_layer_state();
         oled_render_keylog();
+        // oled_render_wpm();
     } else {
         oled_render_logo();
     }

@@ -33,7 +33,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define TAPPING_FORCE_HOLD
 #define TAPPING_TERM 100
 #define AUTO_SHIFT_TIMEOUT 200
-
+//mouse
+#define MK_3_SPEED
+#define MK_C_OFFSET_2 16
+//end mouse
 #ifdef RGBLIGHT_ENABLE
     #undef RGBLED_NUM
     #define RGBLIGHT_ANIMATIONS
